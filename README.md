@@ -1,177 +1,166 @@
-# 3 Rs of Software Architecture
+# Yazılım Mimarisinin Üç R'ı
 
 ![software architecture pyramid](public/software-architecture-pyramid.png)
 
-## Software Architecture
+## Yazılım Mimarisi
 
-After 50+ years of software engineering's existence, we haven't settled on an exact definition of what software architecture is. After all, it is the art in computer science -- persistently evading our most determined of efforts to define it. Even still, it's so vital to the fabric of our industry and applications, that it's impossible to ignore.
+50 yılı aşkın yazılım mühendisliğinin varlığından sonra, yazılım mimarisinin tam bir tanımına varmadık. Sonuçta, bilgisayar bilimindeki sanattır - onu tanımlamak için en kararlı çabalarımızdan tam altını doldurmuyor. Yine de, endüstrimizin ve uygulamalarımızın yapısı için o kadar hayati ki, görmezden gelmek imkansızdır.
 
-Despite our lack of agreement, there are a lot of definitions that can help bring us closer to a formalization of software architecture. Perhaps the most notable of such comes from the IEEE:
+Fikir birliği tam anlamıyla olmamasına rağmen, yazılım mimarisinin resmileştirilmesine yaklaşmamıza yardımcı olabilecek birçok tanım var. Belki de en dikkat çekeni IEEE'den geliyor:
 
->"Architecture is the fundamental organization of a system embodied in its components, their relationships to each other, and to the environment, and the principles guiding its design and evolution." [IEEE 1471]
+> "Mimarlık bileşenlerini , bileşenlerin birbirleriyle ilişkilerini ve bileşenlerin çevresiyle ilişkisini içeren ve tasarım ve gelişimine rehberlik eden bir sistemin temel organizasyonudur." [IEEE 1471]
 
-While this definition and others can bring clarity to the elements that make up architecture, it doesn't give us a mental model to use when developing our applications. This project however, aims to give just that. By looking at 3 particular "ilities" (readability, reusability, and refactorability), we can form a hierarchy of architectural attributes that can give us a framework for thinking about our system's code and architecture. It won't give you an architecture per se, but it will guide you in thinking about what architecture works for your application.
+Bu tanım ve diğerleri mimariyi oluşturan unsurlara açıklık getirebilse de, uygulamalarımızı geliştirirken kullanmamız için zihinsel bir model vermiyor. Ancak bu proje sadece bunu vermeyi amaçlamaktadır. 3 özel ["ility"](https://en.wiktionary.org/wiki/ility) (okunabilirlik`readability`, tekrar kullanılabilirlik `reusability` ve yeniden düzenlenebilirlik `refactorability`) bakarak, sistemimizin kodu ve mimarisini düşünmek için bize bir çerçeve oluşturabilecek bir mimari özellikler hiyerarşisi oluşturabiliriz. Size bir mimari vermeyecektir, ancak uygulamanız için hangi mimarinin çalıştığını düşünmenizde size yol gösterecektir.
 
 ## What is This Project?
-This project is a guide that attempts to analyze 3 "ilities" of software architecture (readability, reusability, and refactorability), and show how we can form better code by thinking through these concepts hierarchically. This project is for any developer of any skill level, but if you are just starting out you will find more value in this than a seasoned practitioner.
 
-The code we will be looking at is a very simple shopping cart application written in JavaScript, which makes use of two major libraries in the ecosystem: React and Redux. JavaScript and the aforementioned tools are by no means the only way to structure any particular application. They happen to be used by a lot of newcomers to the industry, and by many veterans as well, so their frequency of usage makes them a wonderful common language by which to discuss code quality. We will be developing our application one piece at a time and looking at Bad vs. Good versions at each step in 3 R hierarchy. You can find all the code in the `src` directory, and instructions about how to build this and develop on it are at the bottom of this README.
+Bu proje, yazılım mimarisinin 3 “ility”si ile (okunabilirlik, tekrar kullanılabilirlik ve yeniden düzenlenebilirlik) analiz etmeye çalışan ve bu kavramları hiyerarşik olarak düşünerek nasıl daha iyi kod oluşturabileceğimizi gösteren bir rehberdir. Bu proje herhangi bir beceri seviyesindeki herhangi bir geliştirici içindir, ancak yeni başlıyorsanız, bu konuda deneyimli bir uygulayıcıdan daha fazla değer bulacaksınız.
 
-One more thing to reiterate: this project isn't the only way to look at software, and it certainly can't give you an architecture, but it's something that can hopefully guide your thinking, as it has guided mine.
+Bakacağımız kod, JavaScript'te yazılmış, ekosistemdeki iki büyük kütüphaneyi kullanan (React ve Redux) çok basit bir alışveriş sepeti uygulamasıdır JavaScript ve yukarıda belirtilen araçlar hiçbir şekilde belirli bir uygulamayı yapılandırmanın tek yolu değildir. Sektöre birçok yeni gelen ve birçok uzman tarafından da kullanılıyorlar, bu nedenle kullanım sıklıkları onları kod kalitesini tartışmak için harika bir ortak dil haline getiriyor. Uygulamamızı her seferinde bir parça geliştireceğiz ve `3 R` hiyerarşisindeki her adımda Kötü ve İyi sürümlerine bakacağız. Tüm kodu `src` dizininde bulabilirsiniz ve bunun nasıl oluşturulacağı ve geliştirileceği ile ilgili talimatlar bu README'nin altındadır.
 
-Without further ado, let's get started!
+Tekrarlanması gereken bir şey daha var: bu proje yazılıma bakmanın tek yolu değildir ve kesinlikle size bir mimari veremez, ancak bu benimkini yönlendirdiği gibi sizin de düşüncelerinizi yönlendirebilecek bir rehberdir.
 
-## 1. Readability
-Readability is the simplest way of assessing code quality and it's the most straightforward to fix. It is the most obvious thing you see right when you open up a piece of code, and it generally consists of:
+Daha fazla uzatmadan başlayalım!
 
-* Formatting
-* Variable names
-* Function names
-* Amount of function arguments
-* Function length (number of lines)
-* Nesting levels
+## 1. Readability (Okunabilirlik)
 
-These aren't the only things to consider, but they are immediate red flags. Fortunately, there are a few easy rules to follow to fix problems associated with those above:
+Okunabilirlik, kod kalitesini değerlendirmenin en basit yoludur ve düzeltilmesi en kolay yöntemdir. Bir kod parçasını açtığınızda gördüğünüz en bariz şeydir ve genellikle aşağıdakilerden oluşur:
 
-* Invest in an automatic formatter. Find one your team agrees on and integrate it into your build process. There's nothing that wastes more time and money during code reviews than formatting arguments. Get a formatter and never look back! In this project we will use Prettier.
-* Use meaningful and pronounceable variable/function names. Code is for people, and only incidentally for computers. Naming is the biggest thing that communicates the meaning behind your code.
-* Limit your function arguments to between 1-3. 0 arguments implies you're mutating state or relying on state coming from somewhere else other than your caller. More than 3 arguments is just plain hard to read and refactoring it is difficult because there are so many paths your function can take the more arguments it has.
-* There is no set limit of lines for a function, as this depends on what particular language you are coding in. The main point is that your function should do ONE thing, and ONE thing only. If your function, which calculates the price of an item after taxes, first has to connect to the database, look up the item, get the tax data, and then do the calculation, then it's clearly doing more than one thing. Long functions typically indicate too much is happening.
-* More than two levels of nesting can imply poor performance (in a loop), and it can be especially hard to read in long conditionals. Consider extracting nested logic into separate functions.
+- Biçimlendirme
+- Değişken isimleri
+- Fonksiyon adları
+- Fonksiyon argümanlarının miktarı
+- Fonksiyon uzunluğu (satır sayısı)
+- İç içe geçme seviyeleri
 
-Let's take a look at this first piece of our shopping cart application, to see what bad readability looks like:
+Dikkate alınması gereken tek şey bunlar değil, ama kırmızı bayraklar kaldırmaya en yakın olanları. Neyse ki, yukarıdaki sorunlarla ilgili sorunları çözmek için izlenmesi gereken birkaç kolay kural vardır:
+
+- Otomatik bir biçimlendiriciye yatırım yapın. Ekibinizin üzerinde anlaştığı bir tanesini bulun ve oluşturma sürecinize entegre edin. Kod incelemeleri sırasında argümanları biçimlendirmekten daha fazla zaman ve para harcayan hiçbir şey yoktur. Bir biçimlendirici alın ve asla geriye bakmayın! Bu projede Prettier'i kullanacağız.
+- Anlamlı ve belirgin değişken / fonksiyon adları kullanın. Kod insanlar içindir ve yalnızca arada bir bilgisayarlar içindir. Adlandırma, kodunuzun arkasındaki anlamı bildiren en büyük şeydir.
+- Fonksiyon argümanlarınızı 1-3 arasında sınırlandırın. 0 argüman, durumu mutasyona(değiştirmeye) uğrattığınızı veya arayandan başka bir yerden gelen duruma güvendiğinizi gösterir. 3'ten fazla argümanın okunması ve yeniden düzenlenmesi oldukça zordur zor olmasının sebebi fonksiyonunuzun sahip olduğu daha fazla argümanı alabileceği birçok yol var.
+- Bir işlev için belirlenmiş bir satır sınırı yoktur, çünkü bu kodladığınız belirli bir dile bağlıdır. Ana nokta, işlevinizin bir şey ve yalnızca bir şey yapmasıdır. Vergiden sonra bir öğenin fiyatını hesaplayan işleviniz önce veritabanına bağlanmak, öğeye bakmak, vergi verilerini almak ve sonra hesaplamayı yapmak zorundaysa, o zaman açıkça birden fazla şey yapar. Uzun fonksiyonlar tipik olarak çok fazla şey olduğunu gösterir.
+- İkiden fazla iç içe yerleştirme düzeyi düşük performansa (bir döngüde) işaret edebilir ve uzun şartlarda okumak özellikle zor olabilir. İç içe mantığı ayrı fonksiyonlara ayırmayı göz önünde bulundurun.
+
+Kötü okunabilirliğin neye benzediğini görmek için alışveriş sepeti uygulamamızın bu ilk parçasına bir göz atalım:
 
 ```javascript
 // src/1-readable/bad/index.js
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 // Inventory
-class inv extends Component
-{
-  constructor()
-  {
+class inv extends Component {
+  constructor() {
     super();
 
     // State
-    this.state =
-    {
-      c: 'usd', // currency
-      i: [ // inventory
+    this.state = {
+      c: "usd", // currency
+      i: [
+        // inventory
         {
-          product: 'Flashlight',
-          img: '/flashlight.jpg',
+          product: "Flashlight",
+          img: "/flashlight.jpg",
           desc: "A really great flashlight",
           price: 100,
           id: 1,
-          c: 'usd'
+          c: "usd",
         },
         {
-          product: 'Tin can',
-          img: '/tin_can.jpg',
+          product: "Tin can",
+          img: "/tin_can.jpg",
           desc: "Pretty much what you would expect from a tin can",
           price: 32,
           id: 2,
-          c: 'usd'
+          c: "usd",
         },
         {
-          product: 'Cardboard Box',
-          img: '/cardboard_box.png',
+          product: "Cardboard Box",
+          img: "/cardboard_box.png",
           desc: "It holds things",
           price: 5,
           id: 3,
-          c: 'usd'
-        }
-      ]
-    }
+          c: "usd",
+        },
+      ],
+    };
   }
 
-  render () {
+  render() {
     return (
-      <table style={{width: '100%'}}>
-      <tbody>
-      <tr>
-      <th>
-        Product
-      </th>
+      <table style={{ width: "100%" }}>
+        <tbody>
+          <tr>
+            <th>Product</th>
 
-      <th>
-        Image
-      </th>
+            <th>Image</th>
 
-      <th>
-        Description
-      </th>
+            <th>Description</th>
 
-      <th>
-        Price
-      </th>
-      </tr>
-        {this.state.i.map(function(i, idx) {
-          return (
-            <tr key = {idx}>
-              <td>
-                {i.product}
-              </td>
+            <th>Price</th>
+          </tr>
+          {this.state.i.map(function (i, idx) {
+            return (
+              <tr key={idx}>
+                <td>{i.product}</td>
 
-              <td>
-              <img src={i.img} alt=""/>
-              </td>
+                <td>
+                  <img src={i.img} alt="" />
+                </td>
 
-              <td>
-              {i.desc}
-              </td>
+                <td>{i.desc}</td>
 
-              <td>
-                {i.price}
-              </td>
-            </tr>
-          );
-        })}
-    </tbody>
-    </table>
+                <td>{i.price}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     );
   }
 }
 
 export default inv;
 ```
-There are a number of problems we can see right away:
-* Inconsistent and unpleasant formatting
-* Poorly named variables
-* Disorganized data structures (inventory not keyed by IDs)
-* Comments that are either unnecessary or serve the job of what a good variable name would
 
-Let's take a look at how we could improve it:
+Hemen görebildiğimiz bir takım sorunlar var:
+
+- Tutarsız ve hoş olmayan biçimlendirme
+- Kötü adlandırılmış değişkenler
+- Dağınık veri yapıları (envanter kimlikler tarafından anahtarlanmamış)
+- Gereksiz olan ya da iyi bir değişken isminin ne işe yaradığına dair yorumlar
+
+Bunu nasıl geliştirebileceğimize bir göz atalım:
+
 ```javascript
 // src/1-readable/good/index.js
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 export default class Inventory extends Component {
   constructor() {
     super();
     this.state = {
-      localCurrency: 'usd',
+      localCurrency: "usd",
       inventory: {
         1: {
-          product: 'Flashlight',
-          img: '/flashlight.jpg',
-          desc: 'A really great flashlight',
+          product: "Flashlight",
+          img: "/flashlight.jpg",
+          desc: "A really great flashlight",
           price: 100,
-          currency: 'usd',
+          currency: "usd",
         },
         2: {
-          product: 'Tin can',
-          img: '/tin_can.jpg',
-          desc: 'Pretty much what you would expect from a tin can',
+          product: "Tin can",
+          img: "/tin_can.jpg",
+          desc: "Pretty much what you would expect from a tin can",
           price: 32,
-          currency: 'usd',
+          currency: "usd",
         },
         3: {
-          product: 'Cardboard Box',
-          img: '/cardboard_box.png',
-          desc: 'It holds things',
+          product: "Cardboard Box",
+          img: "/cardboard_box.png",
+          desc: "It holds things",
           price: 5,
-          currency: 'usd',
+          currency: "usd",
         },
       },
     };
@@ -179,42 +168,28 @@ export default class Inventory extends Component {
 
   render() {
     return (
-      <table style={{ width: '100%' }}>
+      <table style={{ width: "100%" }}>
         <tbody>
           <tr>
-            <th>
-              Product
-            </th>
+            <th>Product</th>
 
-            <th>
-              Image
-            </th>
+            <th>Image</th>
 
-            <th>
-              Description
-            </th>
+            <th>Description</th>
 
-            <th>
-              Price
-            </th>
+            <th>Price</th>
           </tr>
-          {Object.keys(this.state.inventory).map(itemId => (
+          {Object.keys(this.state.inventory).map((itemId) => (
             <tr key={itemId}>
-              <td>
-                {this.state.inventory[itemId].product}
-              </td>
+              <td>{this.state.inventory[itemId].product}</td>
 
               <td>
                 <img src={this.state.inventory[itemId].img} alt="" />
               </td>
 
-              <td>
-                {this.state.inventory[itemId].desc}
-              </td>
+              <td>{this.state.inventory[itemId].desc}</td>
 
-              <td>
-                {this.state.inventory[itemId].price}
-              </td>
+              <td>{this.state.inventory[itemId].price}</td>
             </tr>
           ))}
         </tbody>
@@ -223,49 +198,52 @@ export default class Inventory extends Component {
   }
 }
 ```
-This improved code now exhibits the following features:
-* It is consistently formatted using the automatic formatter Prettier
-* Names are much more descriptive
-* Data structures are properly organized. In this case the Inventory is keyed by ID. Bad readability can mean bad performance. If we had wanted to get an item from our inventory in our bad code example we would have had an O(n) lookup time but with Inventory keyed by ID we get an O(1) lookup, which is MUCH faster with large inventories.
-* Comments are no longer needed because good naming serves to clarify the meaning of the code. Comments are needed when business logic is complex and when documentation is required.
+
+Bu geliştirilmiş kod artık aşağıdaki özellikleri göstermektedir:
+
+- Otomatik biçimlendirici Prettier kullanılarak sürekli biçimlendirilir
+- İsimler çok daha açıklayıcı
+- Veri yapıları uygun şekilde düzenlenmiştir. Bu durumda, Envanter kimliğe göre anahtarlanır. Kötü okunabilirlik kötü performans anlamına gelebilir. Kötü kod örneğimizde envanterimizden bir öğe almak isteseydik, bir O (n) arama zamanımız olurdu, ancak Kimliğe göre anahtarlanmış Envanter ile, büyük envanterlerle ÇOK daha hızlı olan bir O (1) araması alırız.
+- Yorumlara artık gerek yoktur çünkü iyi adlandırma, kodun anlamını netleştirmeye yarar. İş mantığı karmaşık olduğunda ve dokümantasyon gerektiğinde yorumlar gereklidir.
 
 ## 2. Reusability
-Reusability is the sole reason you are able to read this code, communicate with strangers online, and even program at all. Reusability allows us to express new ideas with little pieces of the past.
 
-That is why reusability is such an essential concept that should guide your software architecture. We commonly think of reusability in terms of DRY (Don't Repeat Yourself). That is one aspect of it -- don't have duplicate code if you can abstract it properly. Reusability goes beyond that though. It's about making clean, simple APIs that make your fellow progammer say, "Yep, I know exactly what that does!" Reusability makes your code a delight to work with, and it means you can ship features faster.
+Yeniden kullanılabilirlik, bu kodu okuyabilmenizin, yabancılarla çevrimiçi iletişim kurabilmenizin ve hatta program yapabilmenizin tek nedenidir. Yeniden kullanılabilirlik, yeni fikirleri geçmişin küçük parçalarıyla ifade etmemizi sağlar.
 
-We will look at our previous example and expand upon it by adding a currency converter to handle our inventory's pricing in multiple countries:
+Bu nedenle yeniden kullanılabilirlik, yazılım mimarinize rehberlik etmesi gereken çok önemli bir kavramdır. Yeniden kullanılabilirliği genellikle DRY (Don't Repeat Yourself) açısından düşünürüz. Bu, işin bir yönü - doğru şekilde soyutlayabiliyorsanız(abstraction), yinelenen koda sahip olmayın. Yeniden kullanılabilirlik bunun da ötesine geçer. Bu, geliştirici arkadaşlarınızın "Evet, bunun ne işe yaradığını tam olarak biliyorum!" Demesini sağlayan temiz, basit API'ler yapmakla ilgilidir! Yeniden kullanılabilirlik, kodunuzu birlikte çalışmayı bir zevk haline getirir ve özellikleri daha hızlı gönderebileceğiniz anlamına gelir.
+
+Önceki örneğimize bakacağız ve envanterimizin birden çok ülkedeki fiyatlandırmasını işlemek için bir para birimi dönüştürücü ekleyerek bunu genişleteceğiz:
 
 ```javascript
 // src/2-reusable/bad/index.js
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 export default class Inventory extends Component {
   constructor() {
     super();
     this.state = {
-      localCurrency: 'usd',
+      localCurrency: "usd",
       inventory: {
         1: {
-          product: 'Flashlight',
-          img: '/flashlight.jpg',
-          desc: 'A really great flashlight',
+          product: "Flashlight",
+          img: "/flashlight.jpg",
+          desc: "A really great flashlight",
           price: 100,
-          currency: 'usd',
+          currency: "usd",
         },
         2: {
-          product: 'Tin can',
-          img: '/tin_can.jpg',
-          desc: 'Pretty much what you would expect from a tin can',
+          product: "Tin can",
+          img: "/tin_can.jpg",
+          desc: "Pretty much what you would expect from a tin can",
           price: 32,
-          currency: 'usd',
+          currency: "usd",
         },
         3: {
-          product: 'Cardboard Box',
-          img: '/cardboard_box.png',
-          desc: 'It holds things',
+          product: "Cardboard Box",
+          img: "/cardboard_box.png",
+          desc: "It holds things",
           price: 5,
-          currency: 'usd',
+          currency: "usd",
         },
       },
     };
@@ -279,9 +257,9 @@ export default class Inventory extends Component {
     };
 
     this.currencySymbols = {
-      usd: '$',
-      rupee: '₹',
-      yuan: '元',
+      usd: "$",
+      rupee: "₹",
+      yuan: "元",
     };
   }
 
@@ -292,8 +270,8 @@ export default class Inventory extends Component {
   }
 
   convertCurrency(amount, fromCurrency, toCurrency) {
-    const convertedCurrency = amount *
-      this.currencyConversions[fromCurrency][toCurrency];
+    const convertedCurrency =
+      amount * this.currencyConversions[fromCurrency][toCurrency];
     return this.currencySymbols[toCurrency] + convertedCurrency;
   }
 
@@ -311,45 +289,33 @@ export default class Inventory extends Component {
           <option value="rupee">Rupee</option>
           <option value="yuan">Yuan</option>
         </select>
-        <table style={{ width: '100%' }}>
+        <table style={{ width: "100%" }}>
           <tbody>
             <tr>
-              <th>
-                Product
-              </th>
+              <th>Product</th>
 
-              <th>
-                Image
-              </th>
+              <th>Image</th>
 
-              <th>
-                Description
-              </th>
+              <th>Description</th>
 
-              <th>
-                Price
-              </th>
+              <th>Price</th>
             </tr>
 
-            {Object.keys(this.state.inventory).map(itemId => (
+            {Object.keys(this.state.inventory).map((itemId) => (
               <tr key={itemId}>
-                <td>
-                  {this.state.inventory[itemId].product}
-                </td>
+                <td>{this.state.inventory[itemId].product}</td>
 
                 <td>
                   <img src={this.state.inventory[itemId].img} alt="" />
                 </td>
 
-                <td>
-                  {this.state.inventory[itemId].desc}
-                </td>
+                <td>{this.state.inventory[itemId].desc}</td>
 
                 <td>
                   {this.convertCurrency(
                     this.state.inventory[itemId].price,
                     this.state.inventory[itemId].currency,
-                    this.state.localCurrency,
+                    this.state.localCurrency
                   )}
                 </td>
               </tr>
@@ -362,33 +328,35 @@ export default class Inventory extends Component {
 }
 ```
 
-This code works, but merely working is not the point of code. That's why we need to look at this with a stronger lens than just analyzing if it works and it's readable. We have to look if it's reusable. Do you notice any issues?
+Bu kod çalışır, ancak yalnızca çalışmak kodun amacı değildir. Bu yüzden buna, işe yarayıp yaramadığını ve okunabilir olup olmadığını analiz etmekten daha güçlü bir mercekle bakmamız gerekiyor. Yeniden kullanılabilir olup olmadığına bakmalıyız. Herhangi bir sorun fark ettiniz mi?
 
-Think about it!
+Biraz düşün!
 
-Alright, there are 3 main issues in the code above:
-* The Currency Selector is coupled to the Inventory component
-* The Currency Converter is coupled to the Inventory component
-* The Inventory data is defined explicitly in the Inventory component and this isn't provided to the component in an API.
+Pekala, yukarıdaki kodda 3 ana sorun var:
 
-Every function and module should just do one thing, otherwise it can be very difficult to figure out what is going on when you look at the source code. The Inventory component should just be for displaying an inventory, not converting and selecting currencies. The benefit of making modules and functions do one thing is that they are easier to test and they are easier to reuse. If we wanted to use our Currency Converter in another part of the application, we would have to include the whole Inventory component. That doesn't make sense if we just need to convert currency.
+- Para Birimi Seçici, Envanter bileşenine bağlıdır
+- Para Birimi Dönüştürücü, Envanter bileşenine bağlanır
+- Envanter verileri, Envanter bileşeninde açıkça tanımlanır ve bu bir API'den gelmemektedir.
 
-Let's see what this looks like with more reusable components:
+Her işlev ve modül sadece bir şey yapmalıdır, aksi takdirde kaynak koda baktığınızda neler olduğunu anlamak çok zor olabilir. Envanter bileşeni, para birimlerini dönüştürmek ve seçmek için değil, yalnızca bir envanteri görüntülemek için olmalıdır. Modüllerin ve işlevlerin bir şeyi yapmasının yararı, test edilmelerinin daha kolay olması ve yeniden kullanılmasının daha kolay olmasıdır. Döviz Çeviricimizi uygulamanın başka bir bölümünde kullanmak isteseydik, Envanter bileşeninin tamamını dahil etmemiz gerekirdi. Sadece para birimini çevirmemiz gerekiyorsa, bu mantıklı değil.
+
+Daha fazla yeniden kullanılabilir bileşenle bunun neye benzediğini görelim:
+
 ```javascript
 // src/2-reusable/good/currency-converter.js
 export default class CurrencyConverter {
   constructor(currencyConversions) {
     this.currencyConversions = currencyConversions;
     this.currencySymbols = {
-      usd: '$',
-      rupee: '₹',
-      yuan: '元',
+      usd: "$",
+      rupee: "₹",
+      yuan: "元",
     };
   }
 
   convert(amount, fromCurrency, toCurrency) {
-    const convertedCurreny = amount *
-      this.currencyConversions[fromCurrency][toCurrency];
+    const convertedCurreny =
+      amount * this.currencyConversions[fromCurrency][toCurrency];
     return this.currencySymbols[toCurrency] + convertedCurreny;
   }
 }
@@ -397,7 +365,7 @@ export default class CurrencyConverter {
 ```javascript
 // src/2-reusable/good/currency-selector.js
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class CurrencySelector extends Component {
   constructor(props) {
@@ -450,7 +418,7 @@ export default CurrencySelector;
 ```javascript
 // src/2-reusable/good/inventory.js
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class Inventory extends Component {
   constructor(props) {
@@ -472,45 +440,33 @@ class Inventory extends Component {
   render() {
     return (
       <div>
-        <table style={{ width: '100%' }}>
+        <table style={{ width: "100%" }}>
           <tbody>
             <tr>
-              <th>
-                Product
-              </th>
+              <th>Product</th>
 
-              <th>
-                Image
-              </th>
+              <th>Image</th>
 
-              <th>
-                Description
-              </th>
+              <th>Description</th>
 
-              <th>
-                Price
-              </th>
+              <th>Price</th>
             </tr>
 
-            {Object.keys(this.state.inventory).map(itemId => (
+            {Object.keys(this.state.inventory).map((itemId) => (
               <tr key={itemId}>
-                <td>
-                  {this.state.inventory[itemId].product}
-                </td>
+                <td>{this.state.inventory[itemId].product}</td>
 
                 <td>
                   <img src={this.state.inventory[itemId].img} alt="" />
                 </td>
 
-                <td>
-                  {this.state.inventory[itemId].desc}
-                </td>
+                <td>{this.state.inventory[itemId].desc}</td>
 
                 <td>
                   {this.CurrencyConverter.convert(
                     this.state.inventory[itemId].price,
                     this.state.inventory[itemId].currency,
-                    this.state.localCurrency,
+                    this.state.localCurrency
                   )}
                 </td>
               </tr>
@@ -534,10 +490,10 @@ export default Inventory;
 ```javascript
 // src/2-reusable/good/index.js
 
-import React, { Component } from 'react';
-import CurrencyConverter from './currency-converter';
-import Inventory from './inventory';
-import CurrencySelector from './currency-selector';
+import React, { Component } from "react";
+import CurrencyConverter from "./currency-converter";
+import Inventory from "./inventory";
+import CurrencySelector from "./currency-selector";
 
 export default class ReusableGood extends Component {
   constructor() {
@@ -545,25 +501,25 @@ export default class ReusableGood extends Component {
 
     this.inventory = {
       1: {
-        product: 'Flashlight',
-        img: '/flashlight.jpg',
-        desc: 'A really great flashlight',
+        product: "Flashlight",
+        img: "/flashlight.jpg",
+        desc: "A really great flashlight",
         price: 100,
-        currency: 'usd',
+        currency: "usd",
       },
       2: {
-        product: 'Tin can',
-        img: '/tin_can.jpg',
-        desc: 'Pretty much what you would expect from a tin can',
+        product: "Tin can",
+        img: "/tin_can.jpg",
+        desc: "Pretty much what you would expect from a tin can",
         price: 32,
-        currency: 'usd',
+        currency: "usd",
       },
       3: {
-        product: 'Cardboard Box',
-        img: '/cardboard_box.png',
-        desc: 'It holds things',
+        product: "Cardboard Box",
+        img: "/cardboard_box.png",
+        desc: "It holds things",
         price: 5,
-        currency: 'usd',
+        currency: "usd",
       },
     };
 
@@ -577,7 +533,7 @@ export default class ReusableGood extends Component {
     };
 
     this.state = {
-      localCurrency: 'usd',
+      localCurrency: "usd",
     };
 
     this.setGlobalCurrency = (currency) => {
@@ -605,49 +561,52 @@ export default class ReusableGood extends Component {
 }
 ```
 
-This code has improved a great deal. Now we have individual modules for currency selection and conversion. Moreover, we can now provide the inventory data to our Inventory component. That means that we could download the inventory data, for example, and provide it to the Inventory component without ever having to modify its source code. This decoupling is the Dependency Inversion Principle, and it's a powerful way of creating reusable code.
+Bu kod baya gelişti. Artık para birimi seçimi ve dönüştürme için ayrı modüllerimiz var. Dahası, artık envanter verilerini Envanter bileşenimize sağlayabiliriz. Bu, örneğin envanter verilerini indirebileceğimiz ve kaynak kodunu değiştirmeden Envanter bileşenine sağlayabileceğimiz anlamına gelir. Bu ayrıştırma, Bağımlılığı Tersine Çevirme İlkesidir(Dependency Inversion Principle) ve yeniden kullanılabilir kod oluşturmanın güçlü bir yoludur.
 
-Now, it's time for a bit of caution. Before diving in and making everything reusable, it's important to realize that reusability requires that you have a good API for others to consume. If you don't, then whoever uses your API could be hurt when you go to update it because you realize it wasn't thought out well enough. So, when should code NOT be reusable?
+Şimdi biraz dikkatli olma zamanı. Derine dalmadan ve her şeyi yeniden kullanılabilir hale getirmeden önce, yeniden kullanılabilirliğin başkalarının kullanması için iyi bir API'ye sahip olmanız gerektirdiğini anlamak önemlidir. Bunu yapmazsanız, güncellemeye gittiğinizde API'nizi kullanan kişi için çok iyi bir yol olmayabilir çünkü yeterince iyi düşünülmediğini anlarsınız. Öyleyse, kod ne zaman yeniden KULLANILAMAMALIDIR?
 
-* If you can't define a good API yet, don't make a separate module. Duplication is better than a bad foundation.
-* You don't expect to reuse your function or module in the near future.
+- Henüz iyi bir API tanımlayamıyorsanız, ayrı bir modül oluşturmayın. Çoğaltma, kötü bir temelden daha iyidir.
+- Yakın gelecekte işlevinizi veya modülünüzü yeniden kullanmayı beklemiyorsanız.
 
-## 3. Refactorability
-Code that is refactorable is code that you can change without fear. It's code that you can deploy on a Friday night, and come back to on Monday morning without any concern that your users encountered runtime errors.
+## 3. Yeniden düzenlenebilirlik
 
-Refactorability is about the system as a whole. It's about how your reusable modules connect together like LEGO pieces. If you change your Employee module and somehow it breaks your Reporting module, then you know you have some refactorability issues. Refactorability is the highest piece of the 3 R hierarchy, and it's the hardest to achieve and maintain. There will always be issues with any human system, and code is no different. However, there are things that we can do to make our code refactorable. So, what are they?
+Yeniden düzenlenebilen kod, korkmadan değiştirebileceğiniz koddur.
+Bir Cuma gecesi canlıya alabileceğiniz ve Pazartesi sabahı, kullanıcılarınızın herhangi bir hatayla karşılaştığına dair herhangi bir endişe duymadan geri gelebileceğiniz koddur.
 
-* Isolated side effects
-* Tests
-* Static types
+Yeniden düzenlenebilirlik, bir bütün olarak sistemle ilgilidir. Yeniden kullanılabilir modüllerinizin LEGO parçaları gibi birbirine nasıl bağlandığıyla ilgili. Çalışan modülünüzü değiştirirseniz ve Raporlama modülünüzü bir şekilde bozarsanız, bazı yeniden düzenleme sorunlarınız olduğunu anlarsınız. Yeniden düzenlenebilirlik, 3 R hiyerarşisinin en yüksek parçasıdır ve elde edilmesi ve sürdürülmesi en zor olanıdır. İnsanin dahil olduğu sistemde mutlaka hatalar olacaktır ve kodlar bundan farklı değildir. Ancak, kodumuzu yeniden düzenlenebilir hale getirmek için yapabileceğimiz şeyler var. Peki bunlar nedir?
 
-We are using JavaScript, and not a typed alternative such as TypeScript, so we won't be able to see how static types can help. Suffice it to say, when your code has types, such as you see below, you know that nobody can pass incorrect values to your code, which limits the number of possible errors your app can experience:
+- İzole yan etkiler
+- Testler
+- Statik tipler
+
+JavaScript kullanıyoruz ve TypeScript gibi türleri olan bir alternatif değil bu yüzden statik türlerin yardımlarını tam göremeyeceğiz. Kodunuzun aşağıda gördüğünüz gibi türleri olduğunda, hiç kimsenin kodunuza yanlış değerler geçiremeyeceğini ve bu da uygulamanızın yaşayabileceği olası hataların sayısını sınırladığını söylemek yeterlidir:
 
 ```javascript
 // We can't get passed arrays, strings, objects, or any type other than a number
-function add(a : number, b : number) {
+function add(a: number, b: number) {
   return a + b;
 }
 ```
 
-I highly recommend using a statically typed alternative to JavaScript for large applications. Types give you extra confidence beyond what your tests can provide. But types won't help everything, you still need to isolate your side effects and test your code.
+Büyük uygulamalar için JavaScript'e statik olarak yazılmış bir alternatif kullanmanızı şiddetle tavsiye ederim. Tipler, testlerinizin sağlayabileceğinin ötesinde size ekstra güven verir. Ancak türler her şeye yardımcı olmaz, yine de yan etkilerinizi izole etmeniz ve kodunuzu test etmeniz gerekir.
 
-You might be wondering, what does it mean to isolate your side effects? And you might be asking what are side effects even?
+Yan etkilerinizi izole etmek ne anlama geliyor diye merak ediyor olabilirsiniz. Ve hatta yan etkilerin ne olduğunu soruyor olabilirsiniz?
 
-A _side effect_ is when your function or module modifies data outside the scope of itself. If you are writing data to a disk, changing a global variable, or even printing something to the terminal, you have a side effect. Now, if your program has no side effects at all then it's a black box. Programs are instructions that a computer executes which take data in and produce data out. If there's no data going out, then a program isn't useful. But, for a program to produce data it has to modify something in the world outside itself. For this reason we need side effects, but we also need to isolate them.
+Bir _yan etki_, işlevinizin veya modülünüzün kendi kapsamı dışındaki verileri değiştirmesidir. Bir diske veri yazıyorsanız, global bir değişkeni değiştiriyorsanız veya hatta terminale bir şey yazdırıyorsanız, bir yan etkiniz vardır. Programınızın hiç yan etkisi yoksa, o zaman bir kara kutudur(Black box). Programlar, bir bilgisayarın yürüttüğü, verileri alıp veri üreten talimatlardır. Dışarı çıkan bir veri yoksa, o program işe yarayan bir program değildir. Ancak, bir programın veri üretebilmesi için kendi dışındaki dünyada bir şeyi değiştirmesi gerekir. Bu nedenle yan etkilere ihtiyacımız var ama onları da izole etmemiz gerekiyor.
 
-Why should we isolate side effects?
-* Side effects make our code hard to test, because if a function's execution modifies some data that another function depends on then we can't be sure that a function will always give the same output with the same given input.
-* Side effects introduce coupling between otherwise reusable modules. If module A modifies some global state that module B depends on, then A has to be run before B.
-* Side effects make our system unpredictable. If any function or module can manipulate the state of the application, then we can't be sure how us updating one module will affect the whole system.
+Yan etkileri neden izole etmeliyiz?
 
-How do we isolate side effects? The answer is by making one central place to update global state of our application. There are many great ways to do this for a client-side JavaScript application, but for this project we will use Redux.
+- Yan etkiler kodumuzun test edilmesini zorlaştırır, çünkü bir işlevin çalışması başka bir işlevin bağlı olduğu bazı verileri değiştirirse, bir işlevin her zaman aynı girdiyle aynı çıktıyı vereceğinden emin olamayız.
+- Yan etkiler, aksi takdirde yeniden kullanılabilir modüller arasında bağlantı sağlar. Modül A, modül B'nin bağlı olduğu bazı genel durumu değiştirirse, A'nın B'den önce çalıştırılması gerekir.
+- Yan etkiler sistemimizi öngörülemez hale getirir. Herhangi bir işlev veya modül uygulamanın durumunu değiştirebiliyorsa, bir modülü güncellememizin tüm sistemi nasıl etkileyeceğinden emin olamayız.
 
-We will modify our existing code to incorporate a shopping cart. Let's take a look at this new code and see why it's NOT refactorable:
+Yan etkileri nasıl izole ederiz? Cevap, uygulamamızın global durumunu güncellemek için tek bir merkezi yer oluşturmaktır. İstemci tarafı JavaScript uygulaması için bunu yapmanın birçok harika yolu vardır, ancak bu proje için Redux kullanacağız.
+
+Bir alışveriş sepeti eklemek için mevcut kodumuzu değiştireceğiz. Bu yeni koda bir göz atalım ve neden yeniden düzenleneMEdiğini görelim:
 
 ```javascript
 // src/3-refactorable/bad/inventory.js
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class Inventory extends Component {
   constructor(props) {
@@ -674,49 +633,35 @@ class Inventory extends Component {
   render() {
     return (
       <div>
-        <table style={{ width: '100%' }}>
+        <table style={{ width: "100%" }}>
           <tbody>
             <tr>
-              <th>
-                Product
-              </th>
+              <th>Product</th>
 
-              <th>
-                Image
-              </th>
+              <th>Image</th>
 
-              <th>
-                Description
-              </th>
+              <th>Description</th>
 
-              <th>
-                Price
-              </th>
+              <th>Price</th>
 
-              <th>
-                Cart
-              </th>
+              <th>Cart</th>
             </tr>
 
-            {Object.keys(this.state.inventory).map(itemId => (
+            {Object.keys(this.state.inventory).map((itemId) => (
               <tr key={itemId}>
-                <td>
-                  {this.state.inventory[itemId].product}
-                </td>
+                <td>{this.state.inventory[itemId].product}</td>
 
                 <td>
                   <img src={this.state.inventory[itemId].img} alt="" />
                 </td>
 
-                <td>
-                  {this.state.inventory[itemId].desc}
-                </td>
+                <td>{this.state.inventory[itemId].desc}</td>
 
                 <td>
                   {this.CurrencyConverter.convert(
                     this.state.inventory[itemId].price,
                     this.state.inventory[itemId].currency,
-                    this.state.localCurrency,
+                    this.state.localCurrency
                   )}
                 </td>
 
@@ -745,7 +690,7 @@ export default Inventory;
 
 ```javascript
 // src/3-refactorable/bad/cart.js
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class Cart extends Component {
   constructor(props) {
@@ -757,14 +702,11 @@ class Cart extends Component {
     };
 
     // Repeatedly sync global cart to local cart
-    this.watcher = window.setInterval(
-      () => {
-        this.setState({
-          cart: window.cart,
-        });
-      },
-      1000,
-    );
+    this.watcher = window.setInterval(() => {
+      this.setState({
+        cart: window.cart,
+      });
+    }, 1000);
     this.CurrencyConverter = props.currencyConverter;
   }
 
@@ -782,36 +724,32 @@ class Cart extends Component {
     return (
       <div>
         <h2>Cart</h2>
-        {this.state.cart.length === 0
-          ? <p>Nothing in the cart</p>
-          : <table style={{ width: '100%' }}>
-              <tbody>
-                <tr>
-                  <th>
-                    Product
-                  </th>
+        {this.state.cart.length === 0 ? (
+          <p>Nothing in the cart</p>
+        ) : (
+          <table style={{ width: "100%" }}>
+            <tbody>
+              <tr>
+                <th>Product</th>
 
-                  <th>
-                    Price
-                  </th>
+                <th>Price</th>
+              </tr>
+              {this.state.cart.map((itemId, idx) => (
+                <tr key={idx}>
+                  <td>{this.state.inventory[itemId].product}</td>
+
+                  <td>
+                    {this.CurrencyConverter.convert(
+                      this.state.inventory[itemId].price,
+                      this.state.inventory[itemId].currency,
+                      this.state.localCurrency
+                    )}
+                  </td>
                 </tr>
-                {this.state.cart.map((itemId, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      {this.state.inventory[itemId].product}
-                    </td>
-
-                    <td>
-                      {this.CurrencyConverter.convert(
-                        this.state.inventory[itemId].price,
-                        this.state.inventory[itemId].currency,
-                        this.state.localCurrency,
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>}
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     );
   }
@@ -826,44 +764,45 @@ Cart.propTypes = {
 export default Cart;
 ```
 
-Here we have a new shopping cart module that shows the inventory items currently in the shopping cart. There are two very problematic things in this code, what are they?
+Burada, şu anda alışveriş sepetinde bulunan envanter öğelerini gösteren yeni bir alışveriş sepeti modülümüz var. Bu kodda çok sorunlu iki şey var, bunlar nedir?
 
-Think about it!
+Biraz düşünelim!
 
-The two main issues with the code above are:
-* The shopping cart is written to a global variable: `window.cart`
-* The cart is updated by continuously reading from the global `window.cart`, which introduces a coupling to timing.
+Yukarıdaki kodla ilgili iki ana sorun şunlardır:
 
-Even though our modules are reusable and readable, by writing to global variables we are making our overall system very brittle. Any third-party library that we bring in could overwrite our `window.cart` with something else and break our app. Furthermore, any module we write can access it and modify it without any safeguards or centralized way of updating.
+- Alışveriş sepeti global bir değişkene yazılır: `window.cart`
+- Sepet, global `window.cart`tan sürekli okunarak güncellenir ve bu zamanlamaya bir bağlılık sağlar.
 
-You might be saying, "Yeah, yeah I would never structure my app like this in the first place." That's great! Remember though, that even though this is exaggerated, the point is that the way the cart is updated and read is not centralized. If instead of using global variables and `setInterval` you were using a message passing module, that could also make your code hard to understand and refactor at scale because it could be hard to isolate state and figure out how one module might affect another.
+Modüllerimiz yeniden kullanılabilir ve okunabilir olsa da, küresel(global) değişkenlere yazarak genel sistemimizi çok kırılgan hale getiriyoruz. Eklenen herhangi bir kütüphane(third-party library) bizim kullandığımız `window.cart` üzerine yazma işlemi yapabilir ve bir şeyleri bozabilir. Ayrıca, yazdığımız herhangi bir modül, herhangi bir güvenlik önlemi veya merkezi güncelleme yolu olmadan ona erişebilir ve onu değiştirebilir.
+
+"Evet, evet, uygulamamı ilk etapta asla böyle yapılandırmam" diyor olabilirsiniz. Bu harika! Yine de, bu abartılı olsa da, asıl mesele, alışveriş sepetinin güncellenme ve okunma şeklinin merkezileştirilmemiş olmasıdır.Global değişkenler ve `setInterval` kullanmak yerine bir mesaj iletme modülü kullanıyor olsaydınız, bu durum kodunuzun anlaşılmasını ve geniş ölçekte yeniden düzenlenmesini de zorlaştırabilir çünkü durumu izole etmek ve bir modülün diğerini nasıl etkileyebileceğini anlamak zor olabilir.
 
 We will centralize our state management using Redux. If you haven't used Redux before, [check out the tutorial](http://redux.js.org/docs/basics/).
 
-Let's see what this more refactorable code looks like:
+Redux kullanarak durum yönetimimizi(state management) merkezileştireceğiz. Daha önce Redux kullanmadıysanız.[Dokumantasyona göz atın](http://redux.js.org/docs/basics/).
+
+Bakalım bu daha yeniden işlenebilir kod neye benziyor:
 
 ```javascript
 // src/3-refactorable/good/containers/inventory.js
-import React from 'react';
-import { connect } from 'react-redux';
-import { addToCartAction } from '../actions';
+import React from "react";
+import { connect } from "react-redux";
+import { addToCartAction } from "../actions";
 
-import CurrencyConverter from '../lib/currency-converter';
-import Inventory from '../components/inventory';
+import CurrencyConverter from "../lib/currency-converter";
+import Inventory from "../components/inventory";
 
-const InventoryContainer = (
-  {
-    inventory,
-    currencies,
-    localCurrency,
-    addToCart,
-  },
-) => (
+const InventoryContainer = ({
+  inventory,
+  currencies,
+  localCurrency,
+  addToCart,
+}) => (
   <Inventory
     currencyConverter={new CurrencyConverter(currencies)}
     inventory={inventory}
     localCurrency={localCurrency}
-    addToCart={productId => addToCart(productId)}
+    addToCart={(productId) => addToCart(productId)}
   />
 );
 
@@ -874,7 +813,7 @@ InventoryContainer.propTypes = {
   addToCart: React.PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   inventory: state.inventory,
   currencies: state.currencies,
   localCurrency: state.localCurrency,
@@ -883,16 +822,15 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   addToCart: addToCartAction,
 })(InventoryContainer);
-
 ```
 
 ```javascript
 // src/3-refactorable/good/containers/cart.js
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 
-import CurrencyConverter from '../lib/currency-converter';
-import Cart from '../components/cart';
+import CurrencyConverter from "../lib/currency-converter";
+import Cart from "../components/cart";
 
 const CartContainer = ({ cart, inventory, currencies, localCurrency }) => (
   <Cart
@@ -910,7 +848,7 @@ CartContainer.propTypes = {
   localCurrency: React.PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   cart: state.cart,
   inventory: state.inventory,
   currencies: state.currencies,
@@ -922,9 +860,9 @@ export default connect(mapStateToProps, {})(CartContainer);
 
 ```javascript
 // src/3-refactorable/good/actions/index.js
-import * as types from '../constants/action-types';
+import * as types from "../constants/action-types";
 
-export const addToCartAction = productId => ({
+export const addToCartAction = (productId) => ({
   type: types.ADD_TO_CART,
   productId,
 });
@@ -932,7 +870,7 @@ export const addToCartAction = productId => ({
 
 ```javascript
 // src/3-refactorable/good/reducers/cart.js
-import { ADD_TO_CART } from '../constants/action-types';
+import { ADD_TO_CART } from "../constants/action-types";
 
 const initialState = [];
 
@@ -946,30 +884,32 @@ export default (state = initialState, action) => {
 };
 ```
 
-This improved code centralizes our side effects to an `action` function which takes a `productId` in and passes it to our `reducer` which creates an entirely brand-new cart with this product added to it. This new cart is placed in our `store`, and once that happens all of our components which derive their state from particular pieces of the `store` will be notified by `react-redux` of the new data, and they will update their state. React will intelligently re-render each updated component, and that's it!
+Bu geliştirilmiş kod, yan etkilerimizi, `productId`'yi barındıran bir `action` ve oradan da `reducer`'e iletilen şekilde ürün eklemeyi yapan şekilde merkezleştirilmiş oldu. Bu yeni alışveriş sepeti `store` yerleştirilir ve bu gerçekleştiğinde, durumlarını `store` belirli parçalarından alan tüm bileşenlerimiz, yeni verilerin `react-redux` tarafından bilgilendirilir ve bunların durumlarını(state) günceller. React, güncellenen her bileşeni akıllıca yeniden(re-render) oluşturacak ve işte bu kadar!
 
-This flow makes it possible to be sure that the state of your application can only be updated in one way, and that's through the _action_ -> _reducer_ -> _store_ -> _component_ pipeline. There's no global state to modify, no messages to pass and keep track of, and no uncontrolled side effects that our modules can produce. The best part is, we can keep track of the entire state of our application so debugging and QA can become much easier, because we have an exact snapshot in time of our entire application.
+Bu akış, uygulamanızın durumunun yalnızca tek bir şekilde güncellenebileceğinden emin olmanızı mümkün kılar ve bu, _action_ -> _reducer_ -> _store_ -> _component_ pipeline yoluyla olur .Değiştirilecek küresel bir durum, iletilecek ve izlenecek mesaj yok ve modüllerimizin üretebileceği kontrolsüz yan etkiler yok. En iyi yanı, uygulamamızın tüm durumunu takip edebilmemizdir, böylece hata ayıklama ve QA çok daha kolay hale gelebilir, çünkü tüm uygulamamızın tam bir anlık görüntüsüne sahibiz.
 
-One caveat to note: you might not need Redux in this project's example application, but if we were to expand this code it would become easier to use Redux as the state management solution instead of putting everything in the top-level controller `index.js`. We could have isolated the state of our app there and passed the appropriate data-modifying action functions down through each module. The issue with that is that at scale, we would have a lot of actions to pass down and a lot of data that would live in one massive `index.js` controller. By committing to a proper centralization of state early, we won't need to change much as our application develops.
+Unutulmaması gereken bir uyarı: Bu projenin örnek uygulamasında Redux'a ihtiyacınız olmayabilir, ancak bu kodu genişletecek olsaydık, Redux'u her şeyi üst düzey denetleyiciye `index.js` ye koymak yerine durum yönetimi çözümü olarak kullanmak daha kolay hale gelirdi.
 
-The last thing we need to look at is tests. Tests give us confidence that we can change a module and it will still do what it was intended to do. We will look at the tests for the Cart and Inventory components:
+Orada uygulamamızın durumunu izole edebilir ve uygun veri değiştirme eylem işlevlerini her modülden geçirebilirdik. Bununla ilgili sorun, ölçeğe göre, devasa bir `index.js` denetleyicisinde yaşayacak çok fazla veriye ve aktarılacak çok sayıda işlemimizin olması. Durumun uygun şekilde merkezileştirilmesini erkenden uyguladığımızda, uygulamamız geliştikçe çok fazla değişiklik yapmamıza gerek kalmayacak.
+
+Bakmamız gereken son şey testler. Testler, bir modülü değiştirebileceğimize dair bize güven verir ve yine de yapılması planlanan şeyi yapar. Alışveriş Sepeti ve Envanter bileşenleri için testlere bakacağız:
 
 ```javascript
 // src/test/cart.test.js
-import React from 'react';
-import { shallow } from 'enzyme';
-import Cart from '../src/3-refactorable/good/components/cart';
+import React from "react";
+import { shallow } from "enzyme";
+import Cart from "../src/3-refactorable/good/components/cart";
 
 const props = {
-  localCurrency: 'usd',
+  localCurrency: "usd",
   cart: [1, 1],
   inventory: {
     1: {
-      product: 'Flashlight',
-      img: '/flashlight.jpg',
-      desc: 'A really great flashlight',
+      product: "Flashlight",
+      img: "/flashlight.jpg",
+      desc: "A really great flashlight",
       price: 100,
-      currency: 'usd',
+      currency: "usd",
     },
   },
   currencyConverter: {
@@ -977,22 +917,22 @@ const props = {
   },
 };
 
-it('should render Cart without crashing', () => {
+it("should render Cart without crashing", () => {
   const cartComponent = shallow(<Cart {...props} />);
   expect(cartComponent);
 });
 
-it('should show all cart data in cart table', () => {
+it("should show all cart data in cart table", () => {
   props.currencyConverter.convert = function () {
     return `$${props.inventory[1].price}`;
   };
 
   const cartComponent = shallow(<Cart {...props} />);
-  let tr = cartComponent.find('tr');
+  let tr = cartComponent.find("tr");
   expect(tr.length).toEqual(3);
 
   props.cart.forEach((item, idx) => {
-    let td = cartComponent.find('td');
+    let td = cartComponent.find("td");
     let product = td.at(2 * idx);
     let price = td.at(2 * idx + 1);
 
@@ -1004,19 +944,19 @@ it('should show all cart data in cart table', () => {
 
 ```javascript
 // src/test/inventory.test.js
-import React from 'react';
-import { shallow } from 'enzyme';
-import Inventory from '../src/3-refactorable/good/components/inventory';
+import React from "react";
+import { shallow } from "enzyme";
+import Inventory from "../src/3-refactorable/good/components/inventory";
 
 const props = {
-  localCurrency: 'usd',
+  localCurrency: "usd",
   inventory: {
     1: {
-      product: 'Flashlight',
-      img: '/flashlight.jpg',
-      desc: 'A really great flashlight',
+      product: "Flashlight",
+      img: "/flashlight.jpg",
+      desc: "A really great flashlight",
       price: 100,
-      currency: 'usd',
+      currency: "usd",
     },
   },
   addToCart: jest.fn(),
@@ -1026,51 +966,55 @@ const props = {
   },
 };
 
-it('should render Inventory without crashing', () => {
+it("should render Inventory without crashing", () => {
   const inventoryComponent = shallow(<Inventory {...props} />);
   expect(inventoryComponent);
 });
 
-it('should show all inventory data in table', () => {
+it("should show all inventory data in table", () => {
   props.currencyConverter.convert = function () {
     return `$${props.inventory[1].price}`;
   };
 
   const inventoryComponent = shallow(<Inventory {...props} />);
-  let tr = inventoryComponent.find('tr');
+  let tr = inventoryComponent.find("tr");
   expect(tr.length).toEqual(2);
 
-  let td = inventoryComponent.find('td');
+  let td = inventoryComponent.find("td");
   let product = td.at(0);
   let image = td.at(1);
   let desc = td.at(2);
   let price = td.at(3);
 
-  expect(product.text()).toEqual('Flashlight');
+  expect(product.text()).toEqual("Flashlight");
   expect(image.html()).toEqual('<td><img src="/flashlight.jpg" alt=""/></td>');
-  expect(desc.text()).toEqual('A really great flashlight');
-  expect(price.text()).toEqual('$100');
+  expect(desc.text()).toEqual("A really great flashlight");
+  expect(price.text()).toEqual("$100");
 });
 
-it('should have Add to Cart button work', () => {
+it("should have Add to Cart button work", () => {
   const inventoryComponent = shallow(<Inventory {...props} />);
-  let addToCartBtn = inventoryComponent.find('button').first();
-  addToCartBtn.simulate('click');
+  let addToCartBtn = inventoryComponent.find("button").first();
+  addToCartBtn.simulate("click");
   expect(props.addToCart).toBeCalled();
 });
 ```
 
-These tests ensure that the Cart and Inventory components:
-* Show the data they are supposed to
-* Maintain a consistent API
-* Can modify state by calling a given action function
+Bu testler, Alışveriş Sepeti ve Envanter bileşenleri iin bize doğru çalıştıını garantiler:
 
-## Final Thoughts
-Software architecture is the stuff that's hard to change, so invest early in a readable, reusable, and refactorable foundation. It will be hard to get there later on. By following the 3 Rs, your users will thank you, your developers will thank you, and you will thank yourself.
+- Gösterilmesi gereken dataların olduğunu
+- Tutarlı bir API olduğunu
+- Belirli bir eylem işlevini çağırarak durumu değiştirebilir olduğunu.
 
---------------------------------------------------------------------------------
-## Development
-Thank you for reading this! If you wish to expand on this project or contribute, run the following commands to install everything you need:
+## Son düşünceler
+
+Yazılım mimarisi, değiştirilmesi zor olan şeydir, bu nedenle okunabilir, yeniden kullanılabilir ve yeniden yapılandırılabilir bir temele erken yatırım yapın. Sonradan değiştirmek gerçekten zordur. 3 R'yi takip ederek, kullanıcılarınız size teşekkür edecek, geliştiricileriniz size teşekkür edecek ve siz de kendinize teşekkür edeceksiniz.
+
+---
+
+## Geliştirme
+
+Bunu okuduğunuz için teşekkürler! Bu projeyi genişletmek veya katkıda bulunmak istiyorsanız, ihtiyacınız olan her şeyi yüklemek için aşağıdaki komutları çalıştırın:
 
 ```
 npm install -g create-react-app
@@ -1078,19 +1022,21 @@ npm install
 npm run start
 ```
 
-Open a browser and see the app running at `http://localhost:3000/`
+Bir tarayıcı açın ve şurada çalışan uygulamayı görün: `http://localhost:3000/`
 
-## Contributing
-Thank you for your contributions!
+## Katkı
 
-Before opening a friendly Pull Request, make sure you run the following and resolve any errors noted by the linter:
+Katkılarınız için teşekkür ederiz!
+
+Dostça bir Çekme İsteği açmadan önce, aşağıdakileri çalıştırdığınızdan ve linter tarafından kaydedilen tüm hataları çözdüğünüzden emin olun:
 
 ```
 npm run fmt
 npm run lint
 ```
 
-Finally, change any relevant code examples in this `README.md` to reflect your changes.
+Son olarak, değişikliklerinizi yansıtmak için bu `README.md` deki ilgili kod örneklerini değiştirin.
 
-## License
+## Lisans
+
 MIT
