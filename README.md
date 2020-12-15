@@ -12,7 +12,7 @@ Fikir birliği tam anlamıyla olmamasına rağmen, yazılım mimarisinin resmile
 
 Bu tanım ve diğerleri mimariyi oluşturan unsurlara açıklık getirebilse de, uygulamalarımızı geliştirirken kullanmamız için zihinsel bir model vermiyor. Ancak bu proje sadece bunu vermeyi amaçlamaktadır. 3 özel ["ility"](https://en.wiktionary.org/wiki/ility) (okunabilirlik`readability`, tekrar kullanılabilirlik `reusability` ve yeniden düzenlenebilirlik `refactorability`) bakarak, sistemimizin kodu ve mimarisini düşünmek için bize bir çerçeve oluşturabilecek bir mimari özellikler hiyerarşisi oluşturabiliriz. Size bir mimari vermeyecektir, ancak uygulamanız için hangi mimarinin çalıştığını düşünmenizde size yol gösterecektir.
 
-## What is This Project?
+## Bu Proje Nedir?
 
 Bu proje, yazılım mimarisinin 3 “ility”si ile (okunabilirlik, tekrar kullanılabilirlik ve yeniden düzenlenebilirlik) analiz etmeye çalışan ve bu kavramları hiyerarşik olarak düşünerek nasıl daha iyi kod oluşturabileceğimizi gösteren bir rehberdir. Bu proje herhangi bir beceri seviyesindeki herhangi bir geliştirici içindir, ancak yeni başlıyorsanız, bu konuda deneyimli bir uygulayıcıdan daha fazla değer bulacaksınız.
 
@@ -206,7 +206,7 @@ Bu geliştirilmiş kod artık aşağıdaki özellikleri göstermektedir:
 - Veri yapıları uygun şekilde düzenlenmiştir. Bu durumda, Envanter kimliğe göre anahtarlanır. Kötü okunabilirlik kötü performans anlamına gelebilir. Kötü kod örneğimizde envanterimizden bir öğe almak isteseydik, bir O (n) arama zamanımız olurdu, ancak Kimliğe göre anahtarlanmış Envanter ile, büyük envanterlerle ÇOK daha hızlı olan bir O (1) araması alırız.
 - Yorumlara artık gerek yoktur çünkü iyi adlandırma, kodun anlamını netleştirmeye yarar. İş mantığı karmaşık olduğunda ve dokümantasyon gerektiğinde yorumlar gereklidir.
 
-## 2. Reusability
+## 2. Reusability (Tekrar Kullanılabilirlik)
 
 Yeniden kullanılabilirlik, bu kodu okuyabilmenizin, yabancılarla çevrimiçi iletişim kurabilmenizin ve hatta program yapabilmenizin tek nedenidir. Yeniden kullanılabilirlik, yeni fikirleri geçmişin küçük parçalarıyla ifade etmemizi sağlar.
 
@@ -568,7 +568,7 @@ Bu kod baya gelişti. Artık para birimi seçimi ve dönüştürme için ayrı m
 - Henüz iyi bir API tanımlayamıyorsanız, ayrı bir modül oluşturmayın. Çoğaltma, kötü bir temelden daha iyidir.
 - Yakın gelecekte işlevinizi veya modülünüzü yeniden kullanmayı beklemiyorsanız.
 
-## 3. Yeniden düzenlenebilirlik
+## 3. Refactorability (Yeniden düzenlenebilirlik)
 
 Yeniden düzenlenebilen kod, korkmadan değiştirebileceğiniz koddur.
 Bir Cuma gecesi canlıya alabileceğiniz ve Pazartesi sabahı, kullanıcılarınızın herhangi bir hatayla karşılaştığına dair herhangi bir endişe duymadan geri gelebileceğiniz koddur.
